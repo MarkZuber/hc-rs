@@ -13,3 +13,4 @@ num = "0.4.1"
 serde = { version = "1.0.197", features = ["derive"] }
 serde-xml-rs = { version = "0.6.0" }
 log = "0.4.20"
+anyhow = "1.0.80"

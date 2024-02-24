@@ -1,5 +1,7 @@
+use anyhow::Result;
 mod denon;
 mod epson;
+use log::error;
 
 pub use self::denon::{DenonReceiver, ReceiverInput};
 pub use self::epson::EpsonProjector;
@@ -18,22 +20,53 @@ impl Theater {
     }
 
     pub fn turn_on(&self, input: ReceiverInput) {
-        self.receiver.turn_on();
-        self.projector.turn_on();
-        // todo: sleep to ensure rcvr is on?
-        DenonReceiver::select_input(input);
+        let do_steps = || -> Result<()> {
+            self.receiver.turn_on()?;
+            self.projector.turn_on()?;
+            self.receiver.select_input(input)?;
+            Ok(())
+        };
+        match do_steps() {
+            Ok(()) => {}
+            Err(e) => error!("{}", e),
+        }
     }
 
     pub fn turn_off(&self) {
-        self.projector.turn_off();
-        self.receiver.turn_off();
+        match self.projector.turn_off() {
+            Ok(()) => {}
+            Err(e) => error!("{}", e),
+        }
+        match self.receiver.turn_off() {
+            Ok(()) => {}
+            Err(e) => error!("{}", e),
+        }
     }
 
     pub fn set_volume(&self, volume: i32) {
-        self.receiver.set_volume(volume);
+        match self.receiver.set_volume(volume) {
+            Ok(()) => {}
+            Err(e) => error!("{}", e),
+        }
     }
 
     pub fn get_volume(&self) -> i32 {
-        self.receiver.get_volume()
+        match self.receiver.get_volume() {
+            Ok(x) => x,
+            Err(e) => {
+                error!("{}", e);
+                0
+            }
+        }
+    }
+
+    pub fn toggle_mute(&self) {
+        match self.receiver.is_muted() {
+            Ok(is_muted) => match self.receiver.mute(!is_muted) {
+                Ok(()) => {}
+                Err(e) => error!("{}", e),
+            },
+            Err(e) => error!("{}", e),
+        }
     }
 }

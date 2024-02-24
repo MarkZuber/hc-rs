@@ -21,7 +21,7 @@ impl StreamDeckController {
 
     const NUM_KEYS: i32 = 15;
     const NUM_COLUMNS: i32 = 5;
-    const NUM_ROWS: i32 = 3;
+    // const NUM_ROWS: i32 = 3;
 
     const PAGE_PACKET_SIZE: usize = 8191;
     const NUM_FIRST_PAGE_PIXELS: u32 = 2583;
@@ -69,11 +69,9 @@ impl StreamDeckController {
     {
         let timeout_ms = 500;
         let mut keystates_buf = self.create_keystates_buf();
-        let bytes_read = self
-            .hid_device
+        self.hid_device
             .read_timeout(keystates_buf.as_mut(), timeout_ms)
             .unwrap();
-        info!("get_keypress() bytes_read: {}", bytes_read);
         keystates_buf
     }
 

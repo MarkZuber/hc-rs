@@ -10,6 +10,16 @@ use std::{
 use streamdeck::StreamDeckController;
 use theater::{DenonReceiver, ReceiverInput, Theater};
 
+struct DeviceAddresses {}
+impl DeviceAddresses {
+    pub fn projector() -> String {
+        "192.168.2.151".to_string()
+    }
+    pub fn receiver() -> String {
+        "192.168.2.198".to_string()
+    }
+}
+
 fn main() -> anyhow::Result<(), anyhow::Error> {
     TermLogger::init(
         LevelFilter::Debug,
@@ -34,9 +44,9 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
 
 #[allow(dead_code)]
 fn receiver_sandbox() {
-    let receiver = DenonReceiver::new("192.168.2.198");
-    // receiver.turn_on();
-    info!("Receiver Volume: {}", receiver.get_volume());
+    let receiver = DenonReceiver::new(&DeviceAddresses::receiver());
+    receiver.turn_on().unwrap();
+    info!("Receiver Volume: {}", receiver.get_volume().unwrap());
 }
 
 fn get_resource_path(resource_file_name: &str) -> String {
@@ -56,7 +66,10 @@ fn do_main_loop() -> anyhow::Result<(), anyhow::Error> {
 
     // Create the StreamDeckController from the vendor/product id
     let controller = StreamDeckController::new().unwrap();
-    let theater = Theater::new("192.168.2.198", "192.168.2.151");
+    let theater = Theater::new(&DeviceAddresses::receiver(), &DeviceAddresses::projector());
+
+    // set default brightness
+    controller.set_brightness(5);
 
     // TODO: finalize icon placement
     const XBOX_KEY_IDX: i32 = 0;
@@ -117,13 +130,14 @@ fn do_main_loop() -> anyhow::Result<(), anyhow::Error> {
             info!("processing key pressed: {}", *keyidx);
 
             match *keyidx {
-                XBOX_KEY_IDX => theater.turn_on(ReceiverInput::Xbox),
-                PLAYSTATION_KEY_IDX => theater.turn_on(ReceiverInput::Playstation),
-                APPLETV_IDX => theater.turn_on(ReceiverInput::AppleTv),
+                XBOX_KEY_IDX => theater.turn_on(ReceiverInput::Game),
+                PLAYSTATION_KEY_IDX => theater.turn_on(ReceiverInput::Dvd),
+                APPLETV_IDX => theater.turn_on(ReceiverInput::Mplay),
                 BRIGHT_IDX => controller.set_brightness(75),
                 DIM_IDX => controller.set_brightness(5),
                 VOLUP_IDX => theater.set_volume(theater.get_volume() + 5),
                 VOLDOWN_IDX => theater.set_volume(theater.get_volume() - 5),
+                MUTE_IDX => theater.toggle_mute(),
                 POWEROFF_IDX => theater.turn_off(),
                 _ => {}
             }

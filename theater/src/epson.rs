@@ -1,3 +1,4 @@
+use anyhow::Result;
 use std::io::prelude::*;
 use std::net::TcpStream;
 use std::{thread, time};
@@ -19,31 +20,33 @@ impl EpsonProjector {
         }
     }
 
-    pub fn turn_on(&self) {
-        self.run_command("PWR ON");
+    pub fn turn_on(&self) -> Result<()> {
+        self.run_command("PWR ON")
     }
 
-    pub fn turn_off(&self) {
-        self.run_command("PWR OFF");
+    pub fn turn_off(&self) -> Result<()> {
+        self.run_command("PWR OFF")
     }
 
     fn get_url(&self) -> String {
         format!("{}:{}", self.device_address, Self::PORT)
     }
 
-    fn run_command(&self, command: &str) {
+    fn run_command(&self, command: &str) -> Result<()> {
         let init_bytes: Vec<u8> = vec![
             0x45, 0x53, 0x43, 0x2F, 0x56, 0x50, 0x2E, 0x6E, 0x65, 0x74, 0x10, 0x03, 0x00, 0x00,
             0x00, 0x00,
         ];
 
-        let mut stream = TcpStream::connect(self.get_url()).unwrap();
-        stream.write(&init_bytes).unwrap();
+        let mut stream = TcpStream::connect(self.get_url())?;
+        stream.write(&init_bytes)?;
 
         thread::sleep(time::Duration::from_millis(100));
         let final_command = format!("{}\r", command).to_ascii_uppercase();
 
-        stream.write(&final_command.as_bytes()).unwrap();
+        stream.write(&final_command.as_bytes())?;
+
+        Ok(())
     }
 
     /*

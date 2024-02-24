@@ -1217,6 +1217,7 @@ dependencies = [
 name = "theater"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "log",
  "num",
  "quick-xml",
