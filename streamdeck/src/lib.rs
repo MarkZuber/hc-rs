@@ -34,7 +34,7 @@ impl StreamDeckController {
         for dev in hid_api.device_list() {
             info!("Device:");
             info!("path: {:?}", dev.path());
-            info!("manufacturer: {:?}", dev.manufacturer_string());
+            info!("manufacturer: {:?}", Some(dev.manufacturer_string()));
             info!("vendorid: {}", dev.vendor_id());
             info!("productid: {}", dev.product_id());
             info!("---");
