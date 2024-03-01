@@ -175,7 +175,7 @@ impl StreamDeckController {
         let mut page_2_buf: Vec<u8> =
             vec![0; usize::try_from(Self::NUM_SECOND_PAGE_PIXELS * 3).unwrap()];
 
-        info!("image dims: {}, {}", image.width(), image.height());
+        // info!("image dims: {}, {}", image.width(), image.height());
 
         for pixel_offset in 0..Self::NUM_FIRST_PAGE_PIXELS {
             // reverse the image

@@ -32,21 +32,10 @@ fn main() -> anyhow::Result<(), anyhow::Error> {
     )?;
 
     info!("Starting up...");
-
-    // receiver_sandbox();
-
     do_main_loop()?;
-
     info!("Exiting...");
 
     Ok(())
-}
-
-#[allow(dead_code)]
-fn receiver_sandbox() {
-    let receiver = DenonReceiver::new(&DeviceAddresses::receiver());
-    receiver.turn_on().unwrap();
-    info!("Receiver Volume: {}", receiver.get_volume().unwrap());
 }
 
 fn get_resource_path(resource_file_name: &str) -> String {
@@ -71,7 +60,6 @@ fn do_main_loop() -> anyhow::Result<(), anyhow::Error> {
     // set default brightness
     controller.set_brightness(5);
 
-    // TODO: finalize icon placement
     const XBOX_KEY_IDX: i32 = 0;
     const PLAYSTATION_KEY_IDX: i32 = 1;
     const APPLETV_IDX: i32 = 2;
@@ -84,7 +72,7 @@ fn do_main_loop() -> anyhow::Result<(), anyhow::Error> {
 
     // Load the images into the streamdeck
     for key_index in 0..controller.get_num_keys() {
-        info!("setting image for key_index: {}", key_index);
+        // info!("setting image for key_index: {}", key_index);
         match key_index {
             XBOX_KEY_IDX => controller.set_image(key_index, &get_resource_path("xbox.png")),
             PLAYSTATION_KEY_IDX => controller.set_image(key_index, &get_resource_path("ps4.png")),
@@ -125,8 +113,6 @@ fn do_main_loop() -> anyhow::Result<(), anyhow::Error> {
         last_key_states = keystates;
 
         for keyidx in keys_pressed.iter() {
-            // based on keypress (if one occurred) key up the appropriate action
-
             info!("processing key pressed: {}", *keyidx);
 
             match *keyidx {
