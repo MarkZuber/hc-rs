@@ -8,7 +8,7 @@ use std::{
     },
 };
 use streamdeck::StreamDeckController;
-use theater::{DenonReceiver, ReceiverInput, Theater};
+use theater::{ReceiverInput, Theater};
 
 struct DeviceAddresses {}
 impl DeviceAddresses {

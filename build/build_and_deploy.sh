@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # -- start first time only run
 
@@ -10,16 +10,13 @@
 
 # -- end first time only run
 
-$cur_dir=$(dirname $0)
+sudo systemctl stop homecontrol
 
-systemctl stop homecontrol
-
-pushd ..
 cargo build
 sudo cp ./build/homecontrol.service /etc/systemd/system/homecontrol.service
 sudo cp ./target/debug/hc-rs /var/homecontrol/hc-rs
-popd
 
+sudo systemctl enable homecontrol
 sudo systemctl start homecontrol
 sudo systemctl status homecontrol
 
