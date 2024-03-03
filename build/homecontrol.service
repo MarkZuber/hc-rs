@@ -14,8 +14,6 @@ RestartSec=10
 SyslogIdentifier=homecontrol
 ExecStart=/var/homecontrol/hc-rs
 WorkingDirectory=/var/homecontrol
-User=homecontroluser
-Group=homecontroluser
 
 [Install]
 WantedBy = multi-user.target

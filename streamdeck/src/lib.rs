@@ -165,11 +165,6 @@ impl StreamDeckController {
     fn set_image_exact(&self, key_index: i32, image: DynamicImage) {
         let device_key_index = self.convert_key_index(key_index);
 
-        info!(
-            "set_image_exact.  key_index: {}  device_key_index: {}",
-            key_index, device_key_index
-        );
-
         let mut page_1_buf: Vec<u8> =
             vec![0; usize::try_from(Self::NUM_FIRST_PAGE_PIXELS * 3).unwrap()];
         let mut page_2_buf: Vec<u8> =
