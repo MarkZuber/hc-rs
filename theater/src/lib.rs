@@ -1,3 +1,5 @@
+use std::{thread, time};
+
 use anyhow::Result;
 mod denon;
 mod epson;
@@ -23,6 +25,10 @@ impl Theater {
         let do_steps = || -> Result<()> {
             self.receiver.turn_on()?;
             self.projector.turn_on()?;
+
+            // Give the receiver time to turn on.
+            // The projector takes a bit to spin up anyway.
+            thread::sleep(time::Duration::from_millis(1500));
             self.receiver.select_input(input)?;
             Ok(())
         };
